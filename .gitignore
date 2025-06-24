@@ -42,3 +42,7 @@ logs
 
 # Local Netlify folder
 .netlify
+
+# Large media files
+public/videos/reporting-tool/reportingTool.mp4
+*.mp4
