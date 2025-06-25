@@ -20,10 +20,16 @@ export default function NextGenReporting() {
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-2">Demo Video</h2>
           <div className="aspect-w-16 aspect-h-9 bg-gray-800 rounded-lg overflow-hidden">
-            <video controls width="100%" className="w-full">
-              <source src="/videos/reporting-tool/reportingTool.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/H5RtGBOCJbM"
+              title="Next Gen Reporting Tool Demo"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full aspect-video"
+            ></iframe>
           </div>
         </div>
         <div className="mt-8">
