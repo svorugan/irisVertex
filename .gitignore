@@ -44,5 +44,6 @@ logs
 .netlify
 
 # Large media files
-public/videos/reporting-tool/reportingTool.mp4
+public/videos/
+videos/
 *.mp4
