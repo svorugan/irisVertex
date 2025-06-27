@@ -6,11 +6,50 @@ export default function Contact() {
     email: '',
     message: ''
   });
+  const [status, setStatus] = useState({
+    submitted: false,
+    submitting: false,
+    info: { error: false, msg: null }
+  });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(formData);
+    setStatus(prevStatus => ({ ...prevStatus, submitting: true }));
+
+    try {
+      const formElement = e.target;
+      const formData = new FormData(formElement);
+      
+      // Send form data to FormSubmit service which will forward to reachus@irisvertex.com
+      const response = await fetch('https://formsubmit.co/reachus@irisvertex.com', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        // Reset form
+        formElement.reset();
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+        setStatus({
+          submitted: true,
+          submitting: false,
+          info: { error: false, msg: 'Message sent successfully!' }
+        });
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setStatus({
+        submitted: false,
+        submitting: false,
+        info: { error: true, msg: 'Something went wrong. Please try again later.' }
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -37,7 +76,17 @@ export default function Contact() {
 
         <div className="max-w-3xl mx-auto">
           <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl border border-gray-700">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form action="https://formsubmit.co/reachus@irisvertex.com" method="POST" onSubmit={handleSubmit} className="space-y-6">
+              {/* FormSubmit configuration fields */}
+              <input type="hidden" name="_subject" value="New Contact Form Submission from iTech Pillar Website" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_next" value={window.location.href} />
+              {status.info.msg && (
+                <div className={`p-4 rounded-lg ${status.info.error ? 'bg-red-500/20 text-red-300' : 'bg-green-500/20 text-green-300'}`}>
+                  {status.info.msg}
+                </div>
+              )}
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
                   Name
@@ -88,12 +137,15 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-primary hover:bg-accent px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-primary/50 flex items-center justify-center"
+                disabled={status.submitting}
+                className="w-full bg-primary hover:bg-accent px-8 py-4 rounded-lg text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-primary/50 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Send Message
-                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                {status.submitting ? 'Sending...' : 'Send Message'}
+                {!status.submitting && (
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                )}
               </button>
             </form>
           </div>
